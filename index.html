@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="app/style/style.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -16,45 +17,66 @@
 
 <div class="container main-content" ng-controller="MinMaxCtrl">
 
-    <form>
+    <form ng-submit="onSubmit()" name="theForm" novalidate>
     <div class="form-group">
         <label for="name">Name</label>
-        <input type="text" class="form-control" ng-model="formModel.name" id="name">
+        <input type="text" class="form-control" ng-model="formModel.name" id="name" required="required">
     </div>
 
-    <div class="form-group">
+    <div class="form-group" ng-class="{'has-error': !theForm.email.$valid && (!theForm.$pristine || theForm.$submitted),
+                                        'has-success': theForm.email.$valid && (!theForm.$pristine || theForm.$submitted)}">
         <label for="email">Email</label>
-        <input type="email" class="form-control" ng-model="formModel.email" id="email">
+        <input type="email" class="form-control" ng-model="formModel.email" id="email" name="email" required="required">
+
+        <p class="help-block" ng-show="theForm.email.$error.required && (!theForm.$pristine || theForm.$submitted)">
+        This field is required.
+        </p>
+        <p class="help-block" ng-show="theForm.email.$error.email && (!theForm.$pristine || theForm.$submitted)">
+            Please enter an email with at least an @ symbol.
+        </p>
+        <pre>Validation? {{ theForm.email.$error | json }}</pre>
+        <pre>Field Valid? {{ theForm.email.$valid }}</pre>
+        <pre>Form Pristine? {{ theForm.$pristine}}</pre>
+
     </div>
+
+
 
     <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" ng-Model="formModel.password" id="password">
+        <input type="password" class="form-control" ng-model="formModel.password" id="password" required="required">
     </div>
 
         <div class="form-group">
             <label for="age">Age</label>
-            <input type="number" class="form-control" ng-model="formModel.age" id="age">
+            <input type="number"
+                   class="form-control"
+                   ng-model="formModel.age"
+                   id="age"
+                   min="18"
+                   max="64"
+                   required="required">
         </div>
 
         <div class="form-group">
             <label for="gender">Gender</label>
             <select name="gender" class="form-control" ng-model="formModel.gender" id="gender">
-                <option value="" >Please Choose</option>
+                <option value="">Please Choose</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
             </select>
         </div>
 
     <div class="form-group">
-        <button class="btn btn-primary" ng-click="onSubmit()">Register</button>
+        <button type="submit" class="btn btn-primary" >Register</button>
     </div>
 
-    <pre>{{ formModel | json }}</pre>
+    <pre>{{ theForm | json }}</pre>
 
 </form>
 </div>
 <script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-auto-validate/dist/jcs-auto-validate.js"></script>
 <script src="app/scripts/app.js"></script>
 </body>
 </html>
